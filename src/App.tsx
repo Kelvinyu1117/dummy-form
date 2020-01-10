@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-
+import Axios from 'axios';
 interface Checkbox {
 	name: string;
 	label: string
@@ -7,16 +7,18 @@ interface Checkbox {
 }
 
 interface FormData {
-	
+	employeeName: string;
+	employeeEmail: string;
+	reasons: string[];
+	dateFrom: string,
+	dateTo: string,
+	managerName: string,
+	managerEmail: string
 }
 const App: React.FC = () => {
 	const [values, setValues] = useState<any>({
 		"employeeName": "",
 		"employeeEmail": "",
-		"anaualLeave": false,
-		"sickLeave": false,
-		"unpaidLeave": false,
-		"othersLeave": false,
 		"othersReasons": "",
 		"dateFrom": "",
 		"dateTo": "",
@@ -24,29 +26,50 @@ const App: React.FC = () => {
 		"managerEmail": ""
 	});
 
+	const [checkBoxValues, setCheckBoxValues] = useState<any>({
+		"anaualLeave": false,
+		"sickLeave": false,
+		"unpaidLeave": false,
+		"othersLeave": false,
+	});
 	const handleChange = (e: any) => {
 
 		setValues({
 			...values,
 			[e.target.name]: e.target.value
 		});
-		console.log(values);
 	}
 
-	const handleClick = (e: any) => {
+	const handleCheckBox = (e: any) => {
 
-		setValues({
-			...values,
+		setCheckBoxValues({
+			...checkBoxValues,
 			[e.target.name]: e.target.checked
 		});
-		console.log(values);
 	}
 
 	const handleSubmit = (e: any) => {
 		e.preventDefault();
-		const data: FormData = {
 
+		const reasons = Object.keys(checkBoxValues)
+			.filter((key: string) => checkBoxValues[key])
+			.map((key: string) => key === "othersLeave" ? values["othersReasons"] : key);
+
+		const data: FormData = {
+			employeeName: values.employeeName,
+			employeeEmail: values.employeeEmail,
+			reasons: reasons,
+			dateFrom: values.dateFrom,
+			dateTo: values.dateTo,
+			managerName: values.managerName,
+			managerEmail: values.managerEmail
 		}
+
+		Axios.post("https://prod-13.southeastasia.logic.azure.com:443/workflows/c9b743e0b3564ba0ae4778a03cf2235f/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=i8qd8_R5CnAz9eGaA3iFB4rYBixEdUuNVNX4H9m7u18",
+			data).then(()=>{
+				console.log("Success");
+			});
+
 	}
 
 	const checkboxList: Checkbox[] = [
@@ -89,18 +112,19 @@ const App: React.FC = () => {
 						{
 							checkboxList.map(item =>
 								<div key={item.key}>
-									<input name={item.name} type="checkbox" checked={values[item.name]} onClick={handleClick} />
+									<input name={item.name} type="checkbox" checked={checkBoxValues[item.name]} onChange={handleCheckBox} />
 									<label>{item.label}</label>
 								</div>
 							)
 						}
+						{checkBoxValues["othersLeave"] && <div><textarea name="othersReason" rows={4} cols={50} onChange={handleChange} /> </div>}
 					</div>
 				</div>
 				<div>
 					<label>Date Requested</label>
 					<div>
 						<label>From</label>
-						<input type="text" name="dateFrom" onChange={handleChange} />
+						<input type="date" name="dateFrom" onChange={handleChange} />
 						<label>To</label>
 						<input type="date" name="dateTo" onChange={handleChange} />
 					</div>
@@ -111,10 +135,10 @@ const App: React.FC = () => {
 						<label>Name</label>
 						<input type="text" name="managerName" onChange={handleChange} />
 						<label>Email</label>
-						<input type="date" name="managerEmail" onChange={handleChange} />
+						<input type="text" name="managerEmail" onChange={handleChange} />
 					</div>
 				</div>
-				<button onSubmit={handleSubmit}>Submit</button>
+				<button onClick={handleSubmit}>Submit</button>
 			</form>
 		</div>
 	);
