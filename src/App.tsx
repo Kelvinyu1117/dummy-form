@@ -1,26 +1,62 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
 
 const App: React.FC = () => {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+	const checkBoxList = [
+		"Anaual Leave",
+		"Sick Leave",
+		"Unpaid Leave",
+	];
+
+	return (
+		<div>
+			<h2>Leave Request Form</h2>
+			<form className="dummy-form">
+				<label>Requested Employee Information</label>
+				<div>
+					<label>Name</label>
+					<input name="name" type="text" />
+					<label>Email</label>
+					<input name="email" type="text" />
+				</div>
+				<div>
+					<label>Reason for Requested Leave</label>
+					<div>
+						{
+							checkBoxList.map(s =>
+								<div>
+									<input type="checkbox" />
+									<label>{s}</label>
+								</div>
+							)
+						}
+						<div>
+							<input type="checkbox" />
+							<label>Other</label>
+							{}
+						</div>
+					</div>
+				</div>
+				<div>
+					<label>Date Requested</label>
+					<div>
+						<label>From</label>
+						<input type="text" name="date-from" />
+						<label>To</label>
+						<input type="date" name="date-to" />
+					</div>
+				</div>
+				<div>
+					<label>Manager Information for Approval</label>
+					<div>
+						<label>Name</label>
+						<input type="text" name="date-from" />
+						<label>Email</label>
+						<input type="date" name="date-to" />
+					</div>
+				</div>
+			</form>
+		</div>
+	);
 }
 
 export default App;
