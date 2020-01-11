@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import './App.css';
 import Axios from 'axios';
+
 interface Checkbox {
 	name: string;
 	label: string
@@ -66,7 +68,7 @@ const App: React.FC = () => {
 		}
 
 		Axios.post("https://prod-13.southeastasia.logic.azure.com:443/workflows/c9b743e0b3564ba0ae4778a03cf2235f/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=i8qd8_R5CnAz9eGaA3iFB4rYBixEdUuNVNX4H9m7u18",
-			data).then(()=>{
+			data).then(() => {
 				console.log("Success");
 			});
 
@@ -97,43 +99,49 @@ const App: React.FC = () => {
 
 	return (
 		<div>
-			<h2>Leave Request Form</h2>
-			<form className="dummy-form">
+			<form className="dummy-form container">
+				<h2 className="title">Leave Request Form</h2>
 				<label>Requested Employee Information</label>
-				<div>
-					<label>Name</label>
-					<input name="employeeName" type="text" onChange={handleChange} />
-					<label>Email</label>
-					<input name="employeeEmail" type="text" onChange={handleChange} />
+				<div className="employee-info-section">
+					<div className="employee-info">
+						<label>Name</label>
+						<input name="employeeName" type="text" onChange={handleChange} />
+					</div>
+					<div className="employee-info">
+						<label>Email</label>
+						<input name="employeeEmail" type="text" onChange={handleChange} />
+					</div>
 				</div>
-				<div>
-					<label>Reason for Requested Leave</label>
-					<div>
+				<label>Reason for Requested Leave</label>
+				<div className="reasons-for-leave">
 						{
 							checkboxList.map(item =>
-								<div key={item.key}>
+								<div className="checkbox-item" key={item.key}>
 									<input name={item.name} type="checkbox" checked={checkBoxValues[item.name]} onChange={handleCheckBox} />
 									<label>{item.label}</label>
 								</div>
 							)
 						}
 						{checkBoxValues["othersLeave"] && <div><textarea name="othersReason" rows={4} cols={50} onChange={handleChange} /> </div>}
-					</div>
 				</div>
-				<div>
-					<label>Date Requested</label>
-					<div>
+				<label>Date Requested</label>
+				<div className="employee-info-section">
+					<div className="employee-info">
 						<label>From</label>
 						<input type="date" name="dateFrom" onChange={handleChange} />
+					</div>
+					<div className="employee-info">
 						<label>To</label>
 						<input type="date" name="dateTo" onChange={handleChange} />
 					</div>
 				</div>
-				<div>
-					<label>Manager Information for Approval</label>
-					<div>
+				<label>Manager Information for Approval</label>
+				<div className="employee-info-section">
+					<div className="employee-info">
 						<label>Name</label>
 						<input type="text" name="managerName" onChange={handleChange} />
+					</div>
+					<div className="employee-info">
 						<label>Email</label>
 						<input type="text" name="managerEmail" onChange={handleChange} />
 					</div>
